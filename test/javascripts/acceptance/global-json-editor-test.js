@@ -1,16 +1,12 @@
 import {
-  acceptance,
-  exists,
-  query,
-} from "discourse/tests/helpers/qunit-helpers";
-import { test } from "qunit";
-import {
   click,
   fillIn,
   triggerEvent,
   visit,
   waitFor,
 } from "@ember/test-helpers";
+import { test } from "qunit";
+import { acceptance, query } from "discourse/tests/helpers/qunit-helpers";
 
 acceptance("Global | JSON editor", function (needs) {
   needs.user();
@@ -29,7 +25,7 @@ acceptance("Global | JSON editor", function (needs) {
     await visit("/admin/plugins/discourse-landing-pages/main");
     await click("button.global");
 
-    assert.ok(exists(".ace_editor"));
+    assert.dom(".ace_editor").exists();
   });
 
   test("Highlights a JSON syntax error", async function (assert) {
@@ -42,7 +38,10 @@ acceptance("Global | JSON editor", function (needs) {
     await triggerEvent(".ace_gutter-layer .ace_error", "mousemove");
     await waitFor(".ace_tooltip[style*='display: block']");
 
-    assert.ok(query(".ace_tooltip").innerText.trim() === "Unexpected 'i'");
+    assert.strictEqual(
+      query(".ace_tooltip").innerText.trim(),
+      "Unexpected 'i'"
+    );
   });
 
   test("Wraps a long line of JSON code", async function (assert) {
@@ -53,6 +52,6 @@ acceptance("Global | JSON editor", function (needs) {
     await click("button.global");
     await fillIn("textarea.ace_text-input", longJson);
 
-    assert.ok(query(".ace_scrollbar-h").style["display"] === "none");
+    assert.strictEqual(query(".ace_scrollbar-h").style["display"], "none");
   });
 });
